@@ -218,6 +218,7 @@ Response:
 ### Additional Production Needs
 
 - **Authentication:** JWT-based auth with user-scoped queries
+- **UseReducer** For more complicated UI state, manage state with a reducer 
 - **Caching:** Redis for tags list
 - **Search:** PostgreSQL full-text search or Elasticsearch
 - **Security:** Rate limiting and input sanitization
