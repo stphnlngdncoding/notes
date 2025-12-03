@@ -84,6 +84,11 @@ form {
   border-color: #3498db;
 }
 
+.form-input:disabled {
+  background-color: #f8f9fa;
+  cursor: not-allowed;
+}
+
 .form-textarea {
   width: 100%;
   padding: 0.75rem;
@@ -97,6 +102,11 @@ form {
 .form-textarea:focus {
   outline: none;
   border-color: #3498db;
+}
+
+.form-textarea:disabled {
+  background-color: #f8f9fa;
+  cursor: not-allowed;
 }
 
 .tag-input-container {

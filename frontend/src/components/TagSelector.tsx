@@ -7,12 +7,9 @@ interface TagSelectorProps {
 }
 
 function TagSelector({ allTags, selectedTags, onChange }: TagSelectorProps) {
-  const handleTagClick = (tag: string) => {
-    if (selectedTags.includes(tag)) {
-      onChange(selectedTags.filter(t => t !== tag));
-    } else {
-      onChange([...selectedTags, tag]);
-    }
+  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value;
+    onChange(value ? [value] : []);
   };
 
   if (allTags.length === 0) {
@@ -21,18 +18,22 @@ function TagSelector({ allTags, selectedTags, onChange }: TagSelectorProps) {
 
   return (
     <div className="tag-selector">
-      <div className="tag-selector-label">Filter by tags:</div>
-      <div className="tag-list">
+      <label htmlFor="tag-filter" className="tag-selector-label">
+        Filter by tag:
+      </label>
+      <select
+        id="tag-filter"
+        value={selectedTags[0] || ''}
+        onChange={handleChange}
+        className="tag-dropdown"
+      >
+        <option value="">All tags</option>
         {allTags.map(tag => (
-          <button
-            key={tag}
-            className={`tag-chip ${selectedTags.includes(tag) ? 'selected' : ''}`}
-            onClick={() => handleTagClick(tag)}
-          >
+          <option key={tag} value={tag}>
             {tag}
-          </button>
+          </option>
         ))}
-      </div>
+      </select>
     </div>
   );
 }

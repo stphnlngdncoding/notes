@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { Note } from './types';
 import NoteList from './components/NoteList';
 import NoteForm from './components/NoteForm';
@@ -22,16 +22,17 @@ function App() {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingNote, setEditingNote] = useState<Note | null>(null);
+  const [viewingNote, setViewingNote] = useState<Note | null>(null);
 
-  const handleSearch = (text: string) => {
+  const handleSearch = useCallback((text: string) => {
     setSearchText(text);
     searchNotes(text, selectedTags);
-  };
+  }, [searchNotes, selectedTags]);
 
-  const handleTagFilter = (tags: string[]) => {
+  const handleTagFilter = useCallback((tags: string[]) => {
     setSelectedTags(tags);
     searchNotes(searchText, tags);
-  };
+  }, [searchNotes, searchText]);
 
   const handleCreateNote = async (title: string, content: string, tags: string[]) => {
     await createNote({ title, content, tags });
@@ -44,14 +45,28 @@ function App() {
     setIsFormOpen(false);
   };
 
+  const handleViewClick = (note: Note) => {
+    setViewingNote(note);
+    setIsFormOpen(true);
+  };
+
   const handleEditClick = (note: Note) => {
+    setViewingNote(null);
     setEditingNote(note);
     setIsFormOpen(true);
+  };
+
+  const handleEditFromView = () => {
+    if (viewingNote) {
+      setEditingNote(viewingNote);
+      setViewingNote(null);
+    }
   };
 
   const handleCloseForm = () => {
     setIsFormOpen(false);
     setEditingNote(null);
+    setViewingNote(null);
   };
 
   return (
@@ -77,15 +92,18 @@ function App() {
 
         <NoteList
           notes={notes}
+          onView={handleViewClick}
           onEdit={handleEditClick}
           onDelete={deleteNote}
         />
 
         {isFormOpen && (
           <NoteForm
-            note={editingNote}
+            note={viewingNote || editingNote}
+            viewMode={!!viewingNote}
             onSave={editingNote ? handleUpdateNote : handleCreateNote}
             onClose={handleCloseForm}
+            onEdit={viewingNote ? handleEditFromView : undefined}
           />
         )}
       </div>

@@ -42,9 +42,31 @@ export function useNotes() {
   }, []);
 
   useEffect(() => {
-    fetchNotes();
-    fetchTags();
-  }, [fetchNotes, fetchTags]);
+    const loadInitialData = async () => {
+      try {
+        const [notesRes, tagsRes] = await Promise.all([
+          fetch(`${API_BASE}/notes`),
+          fetch(`${API_BASE}/tags`)
+        ]);
+
+        if (notesRes.ok) {
+          const notesData = await notesRes.json();
+          setNotes(notesData);
+        }
+
+        if (tagsRes.ok) {
+          const tagsData = await tagsRes.json();
+          setAllTags(tagsData);
+        }
+      } catch (error) {
+        console.error('Error loading data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadInitialData();
+  }, []);
 
   const searchNotes = useCallback((searchText?: string, filterTags?: string[]) => {
     setSearchParams({ text: searchText, tags: filterTags });

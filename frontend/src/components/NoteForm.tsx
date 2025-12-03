@@ -4,11 +4,13 @@ import './NoteForm.css';
 
 interface NoteFormProps {
   note: Note | null;
+  viewMode?: boolean;
   onSave: (id: string, title: string, content: string, tags: string[]) => void | ((title: string, content: string, tags: string[]) => void);
   onClose: () => void;
+  onEdit?: () => void;
 }
 
-function NoteForm({ note, onSave, onClose }: NoteFormProps) {
+function NoteForm({ note, viewMode = false, onSave, onClose, onEdit }: NoteFormProps) {
   const [title, setTitle] = useState(note?.title || '');
   const [content, setContent] = useState(note?.content || '');
   const [tags, setTags] = useState<string[]>(note?.tags || []);
@@ -79,7 +81,7 @@ function NoteForm({ note, onSave, onClose }: NoteFormProps) {
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
-          <h2>{note ? 'Edit Note' : 'Create Note'}</h2>
+          <h2>{viewMode ? 'View Note' : note ? 'Edit Note' : 'Create Note'}</h2>
           <button className="close-btn" onClick={onClose}>
             ×
           </button>
@@ -95,6 +97,8 @@ function NoteForm({ note, onSave, onClose }: NoteFormProps) {
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Enter note title"
               className="form-input"
+              disabled={viewMode}
+              readOnly={viewMode}
             />
           </div>
 
@@ -107,38 +111,44 @@ function NoteForm({ note, onSave, onClose }: NoteFormProps) {
               placeholder="Enter note content"
               className="form-textarea"
               rows={6}
+              disabled={viewMode}
+              readOnly={viewMode}
             />
           </div>
 
           <div className="form-group">
             <label htmlFor="tags">Tags</label>
-            <div className="tag-input-container">
-              <input
-                id="tags"
-                type="text"
-                value={tagInput}
-                onChange={(e) => setTagInput(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder="Add a tag and press Enter"
-                className="form-input"
-              />
-              <button type="button" onClick={handleAddTag} className="btn-add-tag">
-                Add
-              </button>
-            </div>
+            {!viewMode && (
+              <div className="tag-input-container">
+                <input
+                  id="tags"
+                  type="text"
+                  value={tagInput}
+                  onChange={(e) => setTagInput(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  placeholder="Add a tag and press Enter"
+                  className="form-input"
+                />
+                <button type="button" onClick={handleAddTag} className="btn-add-tag">
+                  Add
+                </button>
+              </div>
+            )}
 
             {tags.length > 0 && (
               <div className="tag-chips">
                 {tags.map(tag => (
                   <span key={tag} className="tag-chip-form">
                     {tag}
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveTag(tag)}
-                      className="tag-remove"
-                    >
-                      ×
-                    </button>
+                    {!viewMode && (
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveTag(tag)}
+                        className="tag-remove"
+                      >
+                        ×
+                      </button>
+                    )}
                   </span>
                 ))}
               </div>
@@ -149,11 +159,17 @@ function NoteForm({ note, onSave, onClose }: NoteFormProps) {
 
           <div className="form-actions">
             <button type="button" onClick={onClose} className="btn-secondary">
-              Cancel
+              {viewMode ? 'Close' : 'Cancel'}
             </button>
-            <button type="submit" className="btn-primary">
-              {note ? 'Update' : 'Create'}
-            </button>
+            {viewMode && onEdit ? (
+              <button type="button" onClick={onEdit} className="btn-primary">
+                Edit
+              </button>
+            ) : !viewMode && (
+              <button type="submit" className="btn-primary">
+                {note ? 'Update' : 'Create'}
+              </button>
+            )}
           </div>
         </form>
       </div>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import './SearchBar.css';
 
 interface SearchBarProps {
@@ -8,14 +8,19 @@ interface SearchBarProps {
 
 function SearchBar({ value, onChange }: SearchBarProps) {
   const [inputValue, setInputValue] = useState(value);
+  const onChangeRef = useRef(onChange);
+
+  useEffect(() => {
+    onChangeRef.current = onChange;
+  }, [onChange]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      onChange(inputValue);
+      onChangeRef.current(inputValue);
     }, 300);
 
     return () => clearTimeout(timer);
-  }, [inputValue, onChange]);
+  }, [inputValue]);
 
   return (
     <div className="search-bar">

@@ -2,36 +2,30 @@
   display: flex;
   align-items: center;
   gap: 1rem;
-  flex-wrap: wrap;
 }
 
 .tag-selector-label {
   font-weight: 500;
   color: #555;
+  white-space: nowrap;
 }
 
-.tag-list {
-  display: flex;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-}
-
-.tag-chip {
-  padding: 0.4rem 0.8rem;
-  border: 2px solid #3498db;
+.tag-dropdown {
+  min-width: 200px;
+  padding: 0.5rem;
+  border: 2px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
   background-color: white;
-  color: #3498db;
-  border-radius: 20px;
-  font-size: 0.9rem;
-  font-weight: 500;
-  transition: all 0.2s;
+  cursor: pointer;
+  transition: border-color 0.2s;
 }
 
-.tag-chip:hover {
-  background-color: #ebf5fb;
+.tag-dropdown:focus {
+  outline: none;
+  border-color: #3498db;
 }
 
-.tag-chip.selected {
-  background-color: #3498db;
-  color: white;
+.tag-dropdown option {
+  padding: 0.5rem;
 }
