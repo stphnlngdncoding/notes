@@ -146,6 +146,7 @@ Search input waits 300ms after you stop typing before making an API call, reduci
 - **No persistence** - Data is lost on server restart (in-memory storage)
 - **No pagination** - All notes load at once; won't scale beyond ~200 notes
 - **Single user** - No authentication or multi-user support
+- **Singleton pattern** - Repository and controller are singletons; production should use dependency injection
 - **No real-time sync** - Multiple tabs don't update automatically
 - **Case-sensitive tags** - "Work" and "work" are different tags
 - **No rate limiting** - API can be spammed
