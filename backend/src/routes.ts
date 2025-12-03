@@ -9,13 +9,9 @@ const router = Router();
 router.get('/notes', (req: Request, res: Response) => {
   try {
     const searchText = req.query.search as string | undefined;
-    const tagParam = req.query.tags as string | string[] | undefined;
+    const tag = req.query.tag as string | undefined;
 
-    const filterTags = tagParam
-      ? (Array.isArray(tagParam) ? tagParam : [tagParam])
-      : undefined;
-
-    const notes = controller.getNotes(searchText, filterTags);
+    const notes = controller.getNotes(searchText, tag);
     res.json(notes);
   } catch (error) {
     res.status(500).json({ error: 'Internal server error' });

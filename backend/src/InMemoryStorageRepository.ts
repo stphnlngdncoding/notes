@@ -59,7 +59,7 @@ class InMemoryStorageRepository {
     return this.notes.length < initialLength;
   }
 
-  searchNotes(searchText?: string, filterTags?: string[]): Note[] {
+  searchNotes(searchText?: string, filterTag?: string): Note[] {
     let results = this.notes;
 
     if (searchText) {
@@ -70,10 +70,8 @@ class InMemoryStorageRepository {
       );
     }
 
-    if (filterTags && filterTags.length > 0) {
-      results = results.filter(note =>
-        filterTags.every(tag => note.tags.includes(tag))
-      );
+    if (filterTag) {
+      results = results.filter(note => note.tags.includes(filterTag));
     }
 
     return results.sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());

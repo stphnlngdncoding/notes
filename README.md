@@ -61,7 +61,7 @@ Frontend runs on `http://localhost:3000`
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/api/notes` | Get all notes (supports `?search=text&tags=tag` query params) |
+| GET | `/api/notes` | Get all notes (supports `?search=text&tag=work` query params) |
 | POST | `/api/notes` | Create a new note |
 | PUT | `/api/notes/:id` | Update a note |
 | DELETE | `/api/notes/:id` | Delete a note |
@@ -198,7 +198,7 @@ CREATE INDEX idx_note_tags_tag_id ON note_tags(tag_id);
 Add pagination to `/api/notes`:
 
 ```typescript
-GET /api/notes?page=1&limit=20&search=text&tags=work
+GET /api/notes?page=1&limit=20&search=text&tag=work
 
 Response:
 {

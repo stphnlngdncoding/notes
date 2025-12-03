@@ -3,8 +3,8 @@ import storage from './InMemoryStorageRepository.js';
 import { NotFoundError } from './errors.js';
 
 export class NotesController {
-  getNotes(searchText?: string, filterTags?: string[]): Note[] {
-    return storage.searchNotes(searchText, filterTags);
+  getNotes(searchText?: string, filterTag?: string): Note[] {
+    return storage.searchNotes(searchText, filterTag);
   }
 
   createNote(input: CreateNoteInput): Note {

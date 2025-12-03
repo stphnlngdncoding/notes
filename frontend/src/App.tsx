@@ -19,19 +19,19 @@ function App() {
   } = useNotes();
 
   const [searchText, setSearchText] = useState('');
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [selectedTag, setSelectedTag] = useState('');
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingNote, setEditingNote] = useState<Note | null>(null);
   const [viewingNote, setViewingNote] = useState<Note | null>(null);
 
   const handleSearch = useCallback((text: string) => {
     setSearchText(text);
-    searchNotes(text, selectedTags);
-  }, [searchNotes, selectedTags]);
+    searchNotes(text, selectedTag);
+  }, [searchNotes, selectedTag]);
 
-  const handleTagFilter = useCallback((tags: string[]) => {
-    setSelectedTags(tags);
-    searchNotes(searchText, tags);
+  const handleTagFilter = useCallback((tag: string) => {
+    setSelectedTag(tag);
+    searchNotes(searchText, tag);
   }, [searchNotes, searchText]);
 
   const handleCreateNote = async (title: string, content: string, tags: string[]) => {
@@ -83,7 +83,7 @@ function App() {
           <SearchBar value={searchText} onChange={handleSearch} />
           <TagSelector
             allTags={allTags}
-            selectedTags={selectedTags}
+            selectedTag={selectedTag}
             onChange={handleTagFilter}
           />
         </div>

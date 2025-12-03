@@ -8,13 +8,11 @@ export function useNotes() {
   const [allTags, setAllTags] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchNotes = useCallback(async (searchText?: string, filterTags?: string[]) => {
+  const fetchNotes = useCallback(async (searchText?: string, filterTag?: string) => {
     try {
       const params = new URLSearchParams();
       if (searchText) params.append('search', searchText);
-      if (filterTags && filterTags.length > 0) {
-        filterTags.forEach(tag => params.append('tags', tag));
-      }
+      if (filterTag) params.append('tag', filterTag);
 
       const response = await fetch(`${API_BASE}/notes?${params.toString()}`);
       if (!response.ok) throw new Error('Failed to fetch notes');
@@ -67,8 +65,8 @@ export function useNotes() {
     loadInitialData();
   }, []);
 
-  const searchNotes = useCallback((searchText?: string, filterTags?: string[]) => {
-    fetchNotes(searchText, filterTags);
+  const searchNotes = useCallback((searchText?: string, filterTag?: string) => {
+    fetchNotes(searchText, filterTag);
   }, [fetchNotes]);
 
   const createNote = async (input: CreateNoteInput) => {

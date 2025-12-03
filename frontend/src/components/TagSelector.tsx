@@ -2,14 +2,13 @@ import './TagSelector.css';
 
 interface TagSelectorProps {
   allTags: string[];
-  selectedTags: string[];
-  onChange: (tags: string[]) => void;
+  selectedTag: string;
+  onChange: (tag: string) => void;
 }
 
-function TagSelector({ allTags, selectedTags, onChange }: TagSelectorProps) {
+function TagSelector({ allTags, selectedTag, onChange }: TagSelectorProps) {
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = e.target.value;
-    onChange(value ? [value] : []);
+    onChange(e.target.value);
   };
 
   if (allTags.length === 0) {
@@ -23,7 +22,7 @@ function TagSelector({ allTags, selectedTags, onChange }: TagSelectorProps) {
       </label>
       <select
         id="tag-filter"
-        value={selectedTags[0] || ''}
+        value={selectedTag}
         onChange={handleChange}
         className="tag-dropdown"
       >
