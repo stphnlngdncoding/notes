@@ -1,0 +1,18 @@
+.note-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #95a5a6;
+  font-size: 1.1rem;
+}
+
+@media (max-width: 768px) {
+  .note-list {
+    grid-template-columns: 1fr;
+  }
+}
