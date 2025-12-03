@@ -60,6 +60,7 @@ function App() {
     if (viewingNote) {
       setEditingNote(viewingNote);
       setViewingNote(null);
+      setIsFormOpen(true); // Ensure form stays open
     }
   };
 

@@ -162,7 +162,15 @@ function NoteForm({ note, viewMode = false, onSave, onClose, onEdit }: NoteFormP
               {viewMode ? 'Close' : 'Cancel'}
             </button>
             {viewMode && onEdit ? (
-              <button type="button" onClick={onEdit} className="btn-primary">
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  onEdit();
+                }}
+                className="btn-primary"
+              >
                 Edit
               </button>
             ) : !viewMode && (
