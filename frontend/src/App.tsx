@@ -23,6 +23,7 @@ function App() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingNote, setEditingNote] = useState<Note | null>(null);
   const [viewingNote, setViewingNote] = useState<Note | null>(null);
+  const [formError, setFormError] = useState<string | null>(null);
 
   const handleSearch = useCallback((text: string) => {
     setSearchText(text);
@@ -34,25 +35,31 @@ function App() {
     searchNotes(searchText, tag);
   }, [searchNotes, searchText]);
 
-  const handleCreateNote = async (title: string, content: string, tags: string[]) => {
-    await createNote({ title, content, tags });
-    setIsFormOpen(false);
-  };
-
-  const handleUpdateNote = async (id: string, title: string, content: string, tags: string[]) => {
-    await updateNote(id, { title, content, tags });
-    setEditingNote(null);
-    setIsFormOpen(false);
+  const handleSaveNote = async (title: string, content: string, tags: string[], id?: string) => {
+    try {
+      setFormError(null);
+      if (id) {
+        await updateNote(id, { title, content, tags });
+        setEditingNote(null);
+      } else {
+        await createNote({ title, content, tags });
+      }
+      setIsFormOpen(false);
+    } catch (error) {
+      setFormError(id ? 'Failed to update note. Please try again.' : 'Failed to create note. Please try again.');
+    }
   };
 
   const handleViewClick = (note: Note) => {
     setViewingNote(note);
+    setFormError(null);
     setIsFormOpen(true);
   };
 
   const handleEditClick = (note: Note) => {
     setViewingNote(null);
     setEditingNote(note);
+    setFormError(null);
     setIsFormOpen(true);
   };
 
@@ -60,6 +67,7 @@ function App() {
     if (viewingNote) {
       setEditingNote(viewingNote);
       setViewingNote(null);
+      setFormError(null);
       setIsFormOpen(true); // Ensure form stays open
     }
   };
@@ -68,13 +76,17 @@ function App() {
     setIsFormOpen(false);
     setEditingNote(null);
     setViewingNote(null);
+    setFormError(null);
   };
 
   return (
     <div className="app">
       <header className="app-header">
         <h1>Notes App</h1>
-        <button className="btn-primary" onClick={() => setIsFormOpen(true)}>
+        <button className="btn-primary" onClick={() => {
+          setFormError(null);
+          setIsFormOpen(true);
+        }}>
           + New Note
         </button>
       </header>
@@ -102,9 +114,10 @@ function App() {
           <NoteForm
             note={viewingNote || editingNote}
             viewMode={!!viewingNote}
-            onSave={editingNote ? handleUpdateNote : handleCreateNote}
+            onSave={handleSaveNote}
             onClose={handleCloseForm}
             onEdit={viewingNote ? handleEditFromView : undefined}
+            apiError={formError}
           />
         )}
       </div>

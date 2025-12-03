@@ -5,12 +5,13 @@ import './NoteForm.css';
 interface NoteFormProps {
   note: Note | null;
   viewMode?: boolean;
-  onSave: (id: string, title: string, content: string, tags: string[]) => void | ((title: string, content: string, tags: string[]) => void);
+  onSave: (title: string, content: string, tags: string[], id?: string) => Promise<void> | ((title: string, content: string, tags: string[]) => Promise<void>);
   onClose: () => void;
   onEdit?: () => void;
+  apiError?: string | null;
 }
 
-function NoteForm({ note, viewMode = false, onSave, onClose, onEdit }: NoteFormProps) {
+function NoteForm({ note, viewMode = false, onSave, onClose, onEdit, apiError }: NoteFormProps) {
   const [title, setTitle] = useState(note?.title || '');
   const [content, setContent] = useState(note?.content || '');
   const [tags, setTags] = useState<string[]>(note?.tags || []);
@@ -62,14 +63,14 @@ function NoteForm({ note, viewMode = false, onSave, onClose, onEdit }: NoteFormP
     }
 
     if (note) {
-      (onSave as (id: string, title: string, content: string, tags: string[]) => void)(
-        note.id,
+      onSave(
         title.trim(),
         content.trim(),
-        tags
+        tags,
+        note.id,
       );
     } else {
-      (onSave as (title: string, content: string, tags: string[]) => void)(
+      onSave(
         title.trim(),
         content.trim(),
         tags
@@ -156,6 +157,7 @@ function NoteForm({ note, viewMode = false, onSave, onClose, onEdit }: NoteFormP
           </div>
 
           {error && <div className="error-message">{error}</div>}
+          {apiError && <div className="error-message">{apiError}</div>}
 
           <div className="form-actions">
             <button type="button" onClick={onClose} className="btn-secondary">
