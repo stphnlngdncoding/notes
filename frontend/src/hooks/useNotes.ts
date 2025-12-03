@@ -7,7 +7,6 @@ export function useNotes() {
   const [notes, setNotes] = useState<Note[]>([]);
   const [allTags, setAllTags] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchParams, setSearchParams] = useState<{ text?: string; tags?: string[] }>({});
 
   const fetchNotes = useCallback(async (searchText?: string, filterTags?: string[]) => {
     try {
@@ -69,7 +68,6 @@ export function useNotes() {
   }, []);
 
   const searchNotes = useCallback((searchText?: string, filterTags?: string[]) => {
-    setSearchParams({ text: searchText, tags: filterTags });
     fetchNotes(searchText, filterTags);
   }, [fetchNotes]);
 
