@@ -43,6 +43,10 @@ function App() {
         setEditingNote(null);
       } else {
         await createNote({ title, content, tags });
+        // Reset filters when creating a new note so user sees it
+        setSearchText('');
+        setSelectedTag('');
+        searchNotes('', '');
       }
       setIsFormOpen(false);
     } catch (error) {
