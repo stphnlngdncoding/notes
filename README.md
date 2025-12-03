@@ -11,7 +11,6 @@ A full-stack notes application with tagging, search, and filtering capabilities.
 - **Filter** - Single-select dropdown to filter notes by tag
 - **Optimistic Updates** - Instant UI feedback with automatic rollback on errors
 - **Input Validation** - Zod-based validation on the backend
-- **Clean Architecture** - Separation of concerns with Routes → Controller → Repository pattern
 
 ## Tech Stack
 
@@ -194,8 +193,6 @@ CREATE INDEX idx_notes_updated_at ON notes(updated_at);
 CREATE INDEX idx_note_tags_tag_id ON note_tags(tag_id);
 ```
 
-**Implementation:** Use Prisma or Knex with connection pooling. Replace `InMemoryStorageRepository` with `PostgresRepository`.
-
 ### Pagination
 
 Add pagination to `/api/notes`:
@@ -220,13 +217,9 @@ Response:
 ### Additional Production Needs
 
 - **Authentication:** JWT-based auth with user-scoped queries
-- **Caching:** Redis for tags list and frequent queries
+- **Caching:** Redis for tags list
 - **Search:** PostgreSQL full-text search or Elasticsearch
-- **Security:** Rate limiting, input sanitization, Helmet.js
-- **Monitoring:** Structured logging (Winston), error tracking (Sentry)
+- **Security:** Rate limiting and input sanitization
+- **Monitoring:** Structured logging, error tracking
 - **Infrastructure:** Docker, CI/CD, environment variables
 - **Testing:** Unit, integration, and E2E tests
-
-## License
-
-MIT
