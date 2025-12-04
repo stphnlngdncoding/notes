@@ -1,5 +1,5 @@
 import type { Note, CreateNoteInput, UpdateNoteInput } from './types.js';
-import storage from './InMemoryStorageRepository.js';
+import storage from './repository.js';
 import { NotFoundError } from './errors.js';
 
 export class NotesController {

@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from '@jest/globals';
-import repository from '../InMemoryStorageRepository.js';
+import repository from '../repository.js';
 
 beforeEach(() => {
   // Reset the notes array before each test

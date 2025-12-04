@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach } from '@jest/globals';
 import request from 'supertest';
 import express from 'express';
 import routes from '../routes.js';
-import repository from '../InMemoryStorageRepository.js';
+import repository from '../repository.js';
 
 const app = express();
 app.use(express.json());
