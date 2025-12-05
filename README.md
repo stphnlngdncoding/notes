@@ -66,7 +66,7 @@ Frontend runs on `http://localhost:3000`
 | PUT | `/api/notes/:id` | Update a note |
 | DELETE | `/api/notes/:id` | Delete a note |
 
-**Note:** Tags are computed client-side from the notes collection for better performance.
+**Note:** Tags are computed client-side from the notes collection.
 
 ### Example Request
 
@@ -90,7 +90,7 @@ curl -X POST http://localhost:3001/api/notes \
 │       ├── server.ts              # Express app setup
 │       ├── routes.ts              # HTTP routes & validation
 │       ├── controller.ts          # Business logic
-│       ├── InMemoryStorageRepository.ts  # Data layer
+│       ├── repository.ts  # Data layer
 │       ├── types.ts               # TypeScript types & Zod schemas
 │       └── errors.ts              # Custom error classes
 │
