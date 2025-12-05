@@ -28,12 +28,13 @@ export function useNotes() {
 
       const data = await response.json();
       setNotes(data);
+      updateTagsFromNotes(data);
     } catch (error) {
       console.error('Error fetching notes:', error);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [updateTagsFromNotes]);
 
   useEffect(() => {
     const loadInitialData = async () => {
