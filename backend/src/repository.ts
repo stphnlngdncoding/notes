@@ -76,14 +76,6 @@ class InMemoryStorageRepository {
 
     return results.sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
   }
-
-  getAllTags(): string[] {
-    const tagSet = new Set<string>();
-    this.notes.forEach(note => {
-      note.tags.forEach(tag => tagSet.add(tag));
-    });
-    return Array.from(tagSet).sort();
-  }
 }
 
 export default new InMemoryStorageRepository();

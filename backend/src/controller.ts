@@ -28,10 +28,6 @@ export class NotesController {
       throw new NotFoundError('Note not found');
     }
   }
-
-  getAllTags(): string[] {
-    return storage.getAllTags();
-  }
 }
 
 export default new NotesController();

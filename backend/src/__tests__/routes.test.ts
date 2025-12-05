@@ -137,23 +137,4 @@ describe('API Routes', () => {
       expect(response.status).toBe(404);
     });
   });
-
-  describe('GET /api/tags', () => {
-    it('should return empty array when no notes', async () => {
-      const response = await request(app).get('/api/tags');
-
-      expect(response.status).toBe(200);
-      expect(response.body).toEqual([]);
-    });
-
-    it('should return all unique tags', async () => {
-      await request(app).post('/api/notes').send({ title: 'Note 1', content: 'Content', tags: ['work', 'urgent'] });
-      await request(app).post('/api/notes').send({ title: 'Note 2', content: 'Content', tags: ['personal'] });
-
-      const response = await request(app).get('/api/tags');
-
-      expect(response.status).toBe(200);
-      expect(response.body).toEqual(['personal', 'urgent', 'work']);
-    });
-  });
 });

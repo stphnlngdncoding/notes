@@ -18,3 +18,9 @@ export interface UpdateNoteInput {
   content?: string;
   tags?: string[];
 }
+
+export type ModalState =
+  | { type: 'closed' }
+  | { type: 'viewing'; note: Note }
+  | { type: 'editing'; note: Note }
+  | { type: 'creating' };

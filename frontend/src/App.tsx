@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { Note } from './types';
+import { Note, ModalState } from './types';
 import NoteList from './components/NoteList';
 import NoteForm from './components/NoteForm';
 import SearchBar from './components/SearchBar';
@@ -20,9 +20,7 @@ function App() {
 
   const [searchText, setSearchText] = useState('');
   const [selectedTag, setSelectedTag] = useState('');
-  const [isFormOpen, setIsFormOpen] = useState(false);
-  const [editingNote, setEditingNote] = useState<Note | null>(null);
-  const [viewingNote, setViewingNote] = useState<Note | null>(null);
+  const [modalState, setModalState] = useState<ModalState>({ type: 'closed' });
   const [formError, setFormError] = useState<string | null>(null);
 
   const handleSearch = useCallback((text: string) => {
@@ -40,7 +38,6 @@ function App() {
       setFormError(null);
       if (id) {
         await updateNote(id, { title, content, tags });
-        setEditingNote(null);
       } else {
         await createNote({ title, content, tags });
         // Reset filters when creating a new note so user sees it
@@ -48,38 +45,31 @@ function App() {
         setSelectedTag('');
         searchNotes('', '');
       }
-      setIsFormOpen(false);
+      setModalState({ type: 'closed' });
     } catch (error) {
       setFormError(id ? 'Failed to update note. Please try again.' : 'Failed to create note. Please try again.');
     }
   };
 
   const handleViewClick = (note: Note) => {
-    setViewingNote(note);
     setFormError(null);
-    setIsFormOpen(true);
+    setModalState({ type: 'viewing', note });
   };
 
   const handleEditClick = (note: Note) => {
-    setViewingNote(null);
-    setEditingNote(note);
     setFormError(null);
-    setIsFormOpen(true);
+    setModalState({ type: 'editing', note });
   };
 
   const handleEditFromView = () => {
-    if (viewingNote) {
-      setEditingNote(viewingNote);
-      setViewingNote(null);
+    if (modalState.type === 'viewing') {
       setFormError(null);
-      setIsFormOpen(true); // Ensure form stays open
+      setModalState({ type: 'editing', note: modalState.note });
     }
   };
 
   const handleCloseForm = () => {
-    setIsFormOpen(false);
-    setEditingNote(null);
-    setViewingNote(null);
+    setModalState({ type: 'closed' });
     setFormError(null);
   };
 
@@ -89,7 +79,7 @@ function App() {
         <h1>Notes App</h1>
         <button className="btn-primary" onClick={() => {
           setFormError(null);
-          setIsFormOpen(true);
+          setModalState({ type: 'creating' });
         }}>
           + New Note
         </button>
@@ -114,13 +104,13 @@ function App() {
           onDelete={deleteNote}
         />
 
-        {isFormOpen && (
+        {modalState.type !== 'closed' && (
           <NoteForm
-            note={viewingNote || editingNote}
-            viewMode={!!viewingNote}
+            note={modalState.type === 'creating' ? null : modalState.note}
+            viewMode={modalState.type === 'viewing'}
             onSave={handleSaveNote}
             onClose={handleCloseForm}
-            onEdit={viewingNote ? handleEditFromView : undefined}
+            onEdit={modalState.type === 'viewing' ? handleEditFromView : undefined}
             apiError={formError}
           />
         )}

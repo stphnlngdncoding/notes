@@ -139,21 +139,4 @@ describe('InMemoryStorageRepository', () => {
       expect(results).toHaveLength(2);
     });
   });
-
-  describe('getAllTags', () => {
-    it('should return empty array when no notes', () => {
-      const tags = repository.getAllTags();
-
-      expect(tags).toEqual([]);
-    });
-
-    it('should return unique tags sorted', () => {
-      repository.createNote({ title: 'Note 1', content: 'Content', tags: ['work', 'urgent'] });
-      repository.createNote({ title: 'Note 2', content: 'Content', tags: ['personal', 'urgent'] });
-
-      const tags = repository.getAllTags();
-
-      expect(tags).toEqual(['personal', 'urgent', 'work']);
-    });
-  });
 });

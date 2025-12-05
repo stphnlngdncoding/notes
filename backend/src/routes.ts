@@ -59,13 +59,4 @@ router.delete('/notes/:id', (req: Request, res: Response) => {
   }
 });
 
-router.get('/tags', (req: Request, res: Response) => {
-  try {
-    const tags = controller.getAllTags();
-    res.json(tags);
-  } catch (error) {
-    res.status(500).json({ error: 'Internal server error' });
-  }
-});
-
 export default router;

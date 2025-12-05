@@ -8,6 +8,15 @@ export function useNotes() {
   const [allTags, setAllTags] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // Helper to update tags locally from current notes
+  const updateTagsFromNotes = useCallback((currentNotes: Note[]) => {
+    const tagSet = new Set<string>();
+    currentNotes.forEach(note => {
+      note.tags.forEach(tag => tagSet.add(tag));
+    });
+    setAllTags(Array.from(tagSet).sort());
+  }, []);
+
   const fetchNotes = useCallback(async (searchText?: string, filterTag?: string) => {
     try {
       const params = new URLSearchParams();
@@ -26,34 +35,15 @@ export function useNotes() {
     }
   }, []);
 
-  const fetchTags = useCallback(async () => {
-    try {
-      const response = await fetch(`${API_BASE}/tags`);
-      if (!response.ok) throw new Error('Failed to fetch tags');
-
-      const data = await response.json();
-      setAllTags(data);
-    } catch (error) {
-      console.error('Error fetching tags:', error);
-    }
-  }, []);
-
   useEffect(() => {
     const loadInitialData = async () => {
       try {
-        const [notesRes, tagsRes] = await Promise.all([
-          fetch(`${API_BASE}/notes`),
-          fetch(`${API_BASE}/tags`)
-        ]);
+        const response = await fetch(`${API_BASE}/notes`);
 
-        if (notesRes.ok) {
-          const notesData = await notesRes.json();
+        if (response.ok) {
+          const notesData = await response.json();
           setNotes(notesData);
-        }
-
-        if (tagsRes.ok) {
-          const tagsData = await tagsRes.json();
-          setAllTags(tagsData);
+          updateTagsFromNotes(notesData);
         }
       } catch (error) {
         console.error('Error loading data:', error);
@@ -63,7 +53,7 @@ export function useNotes() {
     };
 
     loadInitialData();
-  }, []);
+  }, [updateTagsFromNotes]);
 
   const searchNotes = useCallback((searchText?: string, filterTag?: string) => {
     fetchNotes(searchText, filterTag);
@@ -91,11 +81,13 @@ export function useNotes() {
 
       const createdNote = await response.json();
 
-      setNotes(prev => prev.map(note =>
-        note.id === tempId ? createdNote : note
-      ));
-
-      fetchTags();
+      setNotes(prev => {
+        const updated = prev.map(note =>
+          note.id === tempId ? createdNote : note
+        );
+        updateTagsFromNotes(updated);
+        return updated;
+      });
     } catch (error) {
       console.error('Error creating note:', error);
       setNotes(prev => prev.filter(note => note.id !== tempId));
@@ -130,11 +122,13 @@ export function useNotes() {
 
       const serverNote = await response.json();
 
-      setNotes(prev => prev.map(note =>
-        note.id === id ? serverNote : note
-      ));
-
-      fetchTags();
+      setNotes(prev => {
+        const updated = prev.map(note =>
+          note.id === id ? serverNote : note
+        );
+        updateTagsFromNotes(updated);
+        return updated;
+      });
     } catch (error) {
       console.error('Error updating note:', error);
       setNotes(previousNotes);
@@ -145,7 +139,11 @@ export function useNotes() {
   const deleteNote = async (id: string) => {
     const previousNotes = [...notes];
 
-    setNotes(prev => prev.filter(note => note.id !== id));
+    setNotes(prev => {
+      const updated = prev.filter(note => note.id !== id);
+      updateTagsFromNotes(updated);
+      return updated;
+    });
 
     try {
       const response = await fetch(`${API_BASE}/notes/${id}`, {
@@ -153,11 +151,10 @@ export function useNotes() {
       });
 
       if (!response.ok) throw new Error('Failed to delete note');
-
-      fetchTags();
     } catch (error) {
       console.error('Error deleting note:', error);
       setNotes(previousNotes);
+      updateTagsFromNotes(previousNotes);
       throw error;
     }
   };

@@ -4,7 +4,7 @@ import { useNotes } from './useNotes';
 
 describe('useNotes', () => {
   beforeEach(() => {
-    global.fetch = vi.fn();
+    globalThis.fetch = vi.fn() as any;
   });
 
   afterEach(() => {
@@ -12,23 +12,15 @@ describe('useNotes', () => {
   });
 
   describe('initial load', () => {
-    it('should load notes and tags on mount', async () => {
+    it('should load notes and compute tags on mount', async () => {
       const mockNotes = [
         { id: '1', title: 'Note 1', content: 'Content 1', tags: ['work'], createdAt: '2024-01-01', updatedAt: '2024-01-01' }
       ];
-      const mockTags = ['work', 'personal'];
-
-      (global.fetch as any).mockImplementation((url: string) => {
+      (globalThis.fetch as any).mockImplementation((url: string) => {
         if (url.includes('/notes')) {
           return Promise.resolve({
             ok: true,
             json: () => Promise.resolve(mockNotes)
-          });
-        }
-        if (url.includes('/tags')) {
-          return Promise.resolve({
-            ok: true,
-            json: () => Promise.resolve(mockTags)
           });
         }
       });
@@ -42,7 +34,7 @@ describe('useNotes', () => {
       });
 
       expect(result.current.notes).toEqual(mockNotes);
-      expect(result.current.allTags).toEqual(mockTags);
+      expect(result.current.allTags).toEqual(['work']);
     });
   });
 
@@ -54,7 +46,7 @@ describe('useNotes', () => {
       const newNote = { title: 'New Note', content: 'New Content', tags: ['work'] };
       const serverNote = { id: '2', ...newNote, createdAt: '2024-01-02', updatedAt: '2024-01-02' };
 
-      (global.fetch as any).mockImplementation((url: string, options?: any) => {
+      (globalThis.fetch as any).mockImplementation((url: string, options?: any) => {
         if (url.includes('/notes') && !options) {
           return Promise.resolve({
             ok: true,
@@ -95,7 +87,7 @@ describe('useNotes', () => {
         { id: '1', title: 'Existing', content: 'Content', tags: [], createdAt: '2024-01-01', updatedAt: '2024-01-01' }
       ];
 
-      (global.fetch as any).mockImplementation((url: string, options?: any) => {
+      (globalThis.fetch as any).mockImplementation((url: string, options?: any) => {
         if (url.includes('/notes') && !options) {
           return Promise.resolve({
             ok: true,
@@ -140,17 +132,11 @@ describe('useNotes', () => {
       ];
       const updatedNote = { id: '1', title: 'Updated', content: 'Content', tags: [], createdAt: '2024-01-01', updatedAt: '2024-01-02' };
 
-      (global.fetch as any).mockImplementation((url: string, options?: any) => {
+      (globalThis.fetch as any).mockImplementation((url: string, options?: any) => {
         if (url.includes('/notes') && !options) {
           return Promise.resolve({
             ok: true,
             json: () => Promise.resolve(mockNotes)
-          });
-        }
-        if (url.includes('/tags')) {
-          return Promise.resolve({
-            ok: true,
-            json: () => Promise.resolve([])
           });
         }
         if (url.includes('/notes/1') && options?.method === 'PUT') {
@@ -179,17 +165,11 @@ describe('useNotes', () => {
         { id: '1', title: 'Original', content: 'Content', tags: [], createdAt: '2024-01-01', updatedAt: '2024-01-01' }
       ];
 
-      (global.fetch as any).mockImplementation((url: string, options?: any) => {
+      (globalThis.fetch as any).mockImplementation((url: string, options?: any) => {
         if (url.includes('/notes') && !options) {
           return Promise.resolve({
             ok: true,
             json: () => Promise.resolve(mockNotes)
-          });
-        }
-        if (url.includes('/tags')) {
-          return Promise.resolve({
-            ok: true,
-            json: () => Promise.resolve([])
           });
         }
         if (url.includes('/notes/1') && options?.method === 'PUT') {
@@ -220,17 +200,11 @@ describe('useNotes', () => {
         { id: '2', title: 'Note 2', content: 'Content', tags: [], createdAt: '2024-01-01', updatedAt: '2024-01-01' }
       ];
 
-      (global.fetch as any).mockImplementation((url: string, options?: any) => {
+      (globalThis.fetch as any).mockImplementation((url: string, options?: any) => {
         if (url.includes('/notes') && !options) {
           return Promise.resolve({
             ok: true,
             json: () => Promise.resolve(mockNotes)
-          });
-        }
-        if (url.includes('/tags')) {
-          return Promise.resolve({
-            ok: true,
-            json: () => Promise.resolve([])
           });
         }
         if (url.includes('/notes/1') && options?.method === 'DELETE') {
@@ -259,17 +233,11 @@ describe('useNotes', () => {
         { id: '1', title: 'Note 1', content: 'Content', tags: [], createdAt: '2024-01-01', updatedAt: '2024-01-01' }
       ];
 
-      (global.fetch as any).mockImplementation((url: string, options?: any) => {
+      (globalThis.fetch as any).mockImplementation((url: string, options?: any) => {
         if (url.includes('/notes') && !options) {
           return Promise.resolve({
             ok: true,
             json: () => Promise.resolve(mockNotes)
-          });
-        }
-        if (url.includes('/tags')) {
-          return Promise.resolve({
-            ok: true,
-            json: () => Promise.resolve([])
           });
         }
         if (url.includes('/notes/1') && options?.method === 'DELETE') {
@@ -300,17 +268,11 @@ describe('useNotes', () => {
         { id: '1', title: 'Work Note', content: 'Content', tags: ['work'], createdAt: '2024-01-01', updatedAt: '2024-01-01' }
       ];
 
-      (global.fetch as any).mockImplementation((url: string) => {
+      (globalThis.fetch as any).mockImplementation((url: string) => {
         if (url.includes('/notes') && url.includes('search=work')) {
           return Promise.resolve({
             ok: true,
             json: () => Promise.resolve(mockNotes)
-          });
-        }
-        if (url.includes('/tags')) {
-          return Promise.resolve({
-            ok: true,
-            json: () => Promise.resolve(['work'])
           });
         }
         return Promise.resolve({
@@ -338,17 +300,11 @@ describe('useNotes', () => {
         { id: '1', title: 'Work Note', content: 'Content', tags: ['work'], createdAt: '2024-01-01', updatedAt: '2024-01-01' }
       ];
 
-      (global.fetch as any).mockImplementation((url: string) => {
+      (globalThis.fetch as any).mockImplementation((url: string) => {
         if (url.includes('/notes') && url.includes('tag=work')) {
           return Promise.resolve({
             ok: true,
             json: () => Promise.resolve(mockNotes)
-          });
-        }
-        if (url.includes('/tags')) {
-          return Promise.resolve({
-            ok: true,
-            json: () => Promise.resolve(['work'])
           });
         }
         return Promise.resolve({

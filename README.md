@@ -65,7 +65,8 @@ Frontend runs on `http://localhost:3000`
 | POST | `/api/notes` | Create a new note |
 | PUT | `/api/notes/:id` | Update a note |
 | DELETE | `/api/notes/:id` | Delete a note |
-| GET | `/api/tags` | Get all unique tags |
+
+**Note:** Tags are computed client-side from the notes collection for better performance.
 
 ### Example Request
 
@@ -152,6 +153,11 @@ Search input waits 300ms after you stop typing before making an API call, reduci
 - **No rate limiting** - API can be spammed
 - **Limited error feedback** - Optimistic updates fail silently if server is down
 - **No offline support** - Requires active connection
+
+## Potential FE Improvements
+- **Error Boundary** - Add a React error boundary to catch rendering errors and prevent blank screens
+- **Delete Confirmation Dialog** - Add confirmation before deleting notes to prevent accidental data loss
+- **Client-Side Validation** - Add Zod validation on the frontend to provide immediate feedback
 
 ## Productionization Guide
 
